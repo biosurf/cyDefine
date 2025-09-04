@@ -37,7 +37,7 @@ BiocManager::install(c("flowCore", "Biobase", "sva"))
 remotes::install_github("biosurf/cyCombine")
 
 # Install cyDefine
-remotes::install_github("claradrachmann/cyDefine", build_vignettes = TRUE)
+remotes::install_github("biosurf/cyDefine", build_vignettes = TRUE)
 ```
 
 ## Documentation {#documentation}

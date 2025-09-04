@@ -32,7 +32,7 @@ BiocManager::install(c("flowCore", "Biobase", "sva"))
 remotes::install_github("biosurf/cyCombine")
 
 # Install cyDefine
-remotes::install_github("claradrachmann/cyDefine", build_vignettes = TRUE)
+remotes::install_github("biosurf/cyDefine", build_vignettes = TRUE)
 ```
 
 ## Documentation
@@ -89,7 +89,7 @@ classified <- cyDefine(
 #> Excluding the following redundant celltypes from the reference: 
 #> Basophil
 #> Training random forest model using 4 threads
-#> Model training took: 13.43 seconds
+#> Model training took: 12.73 seconds
 #> Identifying unassigned cells per predicted cell type
 ```
 

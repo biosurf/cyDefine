@@ -35,7 +35,7 @@ knitr::opts_chunk$set(
 setRepositories(ind = 1:2)
 # Then install package with
 remotes::install_github("biosurf/cyCombine")
-remotes::install_github("claradrachmann/cyCombine")
+remotes::install_github("biosurf/cyDefine")
 ```
 
 ## Load required libraries
