@@ -444,7 +444,7 @@ excl_redundant_populations <- function(
 
 
 
-#' Adapt Seurat PBMC reference to query marker panel
+#' Adapt PBMC reference to query marker panel
 #'
 #' @param reference Tibble of reference data (cells in rows, markers in columns)
 #' @param markers Character vector of available markers present in both query

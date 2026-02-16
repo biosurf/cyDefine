@@ -285,8 +285,9 @@ adding_centroids <- function(df, embedding_plot, add_centroids, col, highlight_l
     if (add_centroids == "text" | add_centroids == "TRUE") {
 
       if (highlight_labels) {
+        merge_list <- get_merge_list(df)
         embedding_plot <- embedding_plot +
-          ggforce::geom_mark_ellipse(data = centroids |> dplyr::filter(stringr::str_detect(.data[[col]], "/")),
+          ggforce::geom_mark_ellipse(data = centroids |> dplyr::filter(celltype %in% names(merge_list)),
             ggplot2::aes(label = .data[[col]]), label.fontsize = 7.5,
               label.buffer = unit(1.5, "mm"),
             con.size = 0.3, con.type = "straight", con.cap = unit(2 , "mm"), con.border = "one",
@@ -880,9 +881,23 @@ get_merge_list <- function(adapted_reference) {
       all(c("celltype", "celltype_original") %in%
             colnames(adapted_reference)))
 
+  merged_populations <- adapted_reference |>
+    dplyr::distinct(celltype_original, .keep_all = TRUE) |>
+    dplyr::count(celltype) |>
+    dplyr::filter(n > 1)
+
+  # merge_list <- adapted_reference |>
+  #   dplyr::distinct(celltype, celltype_original) |>
+  #   dplyr::filter(celltype != celltype_original) |>
+  #   dplyr::group_by(celltype) |>
+  #   dplyr::reframe(
+  #     celltype = unique(celltype),
+  #     celltype_original = list(celltype_original)) |>
+  #   tibble::deframe()
+
   merge_list <- adapted_reference |>
     dplyr::distinct(celltype, celltype_original) |>
-    dplyr::filter(celltype != celltype_original) |>
+    dplyr::filter(celltype %in% merged_populations$celltype) |>
     dplyr::group_by(celltype) |>
     dplyr::reframe(
       celltype = unique(celltype),
