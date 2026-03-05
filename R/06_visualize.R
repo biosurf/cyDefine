@@ -15,7 +15,7 @@ get_distinct_colors <- function(populations, add_unassigned = TRUE) {
     "#1965B0", "#882E72", "#B2DF8A", "#B17BA6", "#A6761D",
     "#E7298A", "#55A1B1", "#E6AB02", "#7570B3", "#ba5ce3",
     "#FAE174", "#B5651D", "#E78AC3", "#aeae5c", "#FF7F00",
-    "#56ff0d", "#AA0A0A", "#BEAED4", "#1e90ff", "#aa8282",
+    "#AA0A0A", "#BEAED4", "#1e90ff", "#aa8282",
     "#0AC8D4", "#808000", "#7800FA", "#00FAFA", "#641A00",
     "#8DD3C7", "#666666", "#999999", "#d4b7b7", "#8600bf",
     "#00bfff", "#ffff00", "#D4E1C8", "#D470C8", "#64C870",
@@ -165,7 +165,7 @@ plot_umap <- function(reference,
   }
 
   if (build_umap_on == "both" | is.null(query)) {
-    if (verbose) {
+    if (verbose & !is.null(query)) {
       message("Computing UMAP embedding of all cells of reference and query")
     }
 
@@ -191,7 +191,7 @@ plot_umap <- function(reference,
     if (verbose) {
       message(
         "Computing UMAP embedding only of reference cells. ",
-        "Be aware that this can hide potential novel populations in query!")
+        "Be aware that this can hide potential novel populations in the query!")
     }
 
     # UMAP embedding of reference
@@ -363,6 +363,7 @@ plot_embedding <- function(embedding, col, colors = NULL, title = "", add_centro
                                    embedding$celltype_original)
       colors <- cyDefine:::expand_colors(embedding[[col]], original_celltypes, colors = colors)
     }
+    names(colors) <- stringr::str_wrap(names(colors), 20)
 
 
     # get number of columns in legend
@@ -475,7 +476,8 @@ plot_abundance <- function(
   predicted_populations,
   colors = NULL,
   return_data = FALSE,
-  verbose = TRUE
+  verbose = TRUE,
+  title = "Cell type abundance"
 ) {
 
   if (verbose) {
@@ -531,7 +533,7 @@ plot_abundance <- function(
       panel.grid.major.x = ggplot2::element_blank()
     ) +
     ggplot2::scale_fill_manual(values = colors) +
-    ggplot2::ggtitle("Cell type abundance") +
+    ggplot2::ggtitle(title) +
     ggplot2::xlab("Predicted cell types") +
     ggplot2::ylab("Proportion of cells")
 
@@ -778,7 +780,7 @@ plot_diagram <- function(input, colors = NULL, fontcolor_nodes = c("unassigned" 
   if (all(c("celltype", "celltype_original") %in% names(input)) & !is(colors, "NULL")) {
     colors <- expand_colors(input$celltype, input$celltype_original, colors)
   } else if (is.null(colors)) {
-    colors <- cyDefine::get_distinct_colors(unique(unlist(merge_list)))
+    colors <- cyDefine::get_distinct_colors(unique(c(unlist(merge_list), names(merge_list))))
   }
   if (!all(names(merge_list) %in% names(colors))) {
     colors[names(merge_list)] <- sapply(names(merge_list), function(merged) {

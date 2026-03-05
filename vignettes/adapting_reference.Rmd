@@ -121,7 +121,7 @@ umap_ref_omip23 <- plot_umap(
   return_data = T,
   markers = colnames(mapped_dummy_omip23),
   add_centroids = "text",
-  title = "OMIP23 marker subset",
+  title = "OMIP-023 marker subset",
   col = "celltype.l2")
 
 umap_ref_omip23$plot
@@ -156,7 +156,7 @@ plot_adapted_omip23 <- umap_ref_omip23$data |>
   dplyr::left_join(adapted_reference_omip23[, c("cell_id", "celltype", "celltype_original")], by = c("cell_id")) |> 
   plot_embedding(
     add_centroids = "text",
-    title = "Adapted reference for OMIP23",
+    title = "Adapted reference for OMIP-023",
     highlight_labels = T,
     colors = colors,
     col = "celltype")
@@ -200,7 +200,7 @@ umap_ref_omip69 <- plot_umap(
   return_data = T,
   down_sample = F,
   add_centroids = "text",
-  title = "UMIP69 marker subset",
+  title = "UMIP-069 marker subset",
   markers = colnames(mapped_dummy_omip69),
   col = "celltype.l2")
 
@@ -223,10 +223,6 @@ adapted_reference_omip69 <- adapt_reference(
 
 ```{r, plot_adapted_omip69, out.width="100%"}
 # Adjust color mapping for specific cell types
-# colors["NK Proliferating / NK"] <- colors["NK"]
-# colors["CD8 Proliferating / CD8 TEM"] <- colors["CD8 TEM"]
-# colors["CD4 Proliferating / CD4 TEM / CD4 TCM"] <- colors["CD4 TEM"]
-# colors["dnT / gdT"] <- colors["gdT"]
 colors <- cyDefine:::expand_colors(adapted_celltypes = adapted_reference_omip69$celltype, original_celltypes = reference$celltype.l2, colors = colors)
 # Join adapted cell types and plot the UMAP
 plot_adapted_omip69 <- umap_ref_omip69$data |> 
@@ -234,7 +230,7 @@ plot_adapted_omip69 <- umap_ref_omip69$data |>
   plot_embedding(
     add_centroids = "text",
     highlight_labels = T,
-    title = "Adapted reference for OMIP69",
+    title = "Adapted reference for OMIP-069",
     colors = colors,
     col = "celltype")
 umap_ref_omip69$plot + plot_adapted_omip69

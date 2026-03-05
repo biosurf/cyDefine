@@ -15,9 +15,8 @@ Description: A package for robust identification of canonical cell types
     as well as unassigned (and potentially novel) cells in various
     single-cell cytometry datasets.
 License: GPL (>= 3)
-biocViews:
+biocViews: Software
 Imports: 
-    cyCombine,
     ranger,
     dplyr, tibble, stringr, tidyr, ggplot2,
     stats, methods,
@@ -46,4 +45,5 @@ VignetteBuilder: knitr
 LazyData: true
 LazyDataCompression: xz
 Depends: 
+    cyCombine,
     R (>= 4.2.0)
