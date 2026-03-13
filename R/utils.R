@@ -48,7 +48,8 @@ check_package <- function(package,
       if (repo == "CRAN") {
         install_function <- "install.packages('"
       } else if (repo == "github") {
-        install_function <- paste0("devtools::install_github('", git_repo, "/")
+        install_function <- "remotes::install_github('"
+        package <- git_repo
       } else if (repo == "Bioc") {
         install_function <- "BiocManager::install('"
       }

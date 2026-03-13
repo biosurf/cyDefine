@@ -47,6 +47,8 @@ performing the UMAP embedding. Options are "both" (default), "reference",
 and "query". "Both" implies that the UMAP embedding is done on both the
 reference and query data.}
 
+\item{metric}{Distance metric for UMAP computation}
+
 \item{shuffle}{Boolean indicating whether rows should be shuffled before plotting}
 
 \item{down_sample}{Boolean indicating whether cells should be down-sampled}

@@ -167,7 +167,7 @@ classified <- cyDefine(
   batch_correct = TRUE,             # Whether to integrate the reference and query using cyCombine (see ?cyCombine::batch_correct for more options)
   xdim = 6, ydim = 6,               # Clustering dimensions for the integration
   identify_unassigned = TRUE,       # Whether unassignable cells should be identified
-  train_on_unassigned = TRUE,       # Whether unassigned cells should be identified unsupervised or using unassigned cells in the reference
+  train_on_unassigned = FALSE,       # Whether unassigned cells should be identified unsupervised or using unassigned cells in the reference
   unassigned_name = "unassigned",   # Name of unassigned cells in the reference
   seed = 332,
   verbose = TRUE
@@ -268,9 +268,10 @@ In this example, the supervised strategy is applied as the query sample is expec
 classified$query <- identify_unassigned(
   query = classified$query, 
   reference = reference,
+  model = classified$model,
   markers = markers, 
   mtry = mtry,
-  train_on_unassigned = TRUE,
+  train_on_unassigned = FALSE,
   unassigned_name = "unassigned",
   seed = 332
   )
@@ -394,7 +395,7 @@ plot_marker_usage(classified$model)
 
 ```{r marker_importance_cell, message=FALSE, warning=FALSE, fig.height = 10, fig.width = 10}
 # Importance of each marker in the classification per celltype
-plot_marker_importance_cell(reference)
+plot_marker_importance_cell(reference, markers = markers)
 ```
 
 #### Top marker importance per celltype

@@ -200,7 +200,7 @@ umap_ref_omip69 <- plot_umap(
   return_data = T,
   down_sample = F,
   add_centroids = "text",
-  title = "UMIP-069 marker subset",
+  title = "OMIP-069 marker subset",
   markers = colnames(mapped_dummy_omip69),
   col = "celltype.l2")
 

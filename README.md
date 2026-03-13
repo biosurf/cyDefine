@@ -32,7 +32,7 @@ BiocManager::install(c("flowCore", "Biobase", "sva"))
 remotes::install_github("biosurf/cyCombine")
 
 # Install cyDefine
-remotes::install_github("biosurf/cyDefine", build_vignettes = TRUE)
+remotes::install_github("biosurf/cyDefine")
 ```
 
 ## Documentation
@@ -53,6 +53,12 @@ data.<br> A large PBMC reference is also available, see
 
 ``` r
 library(cyDefine)
+#> Loading required package: cyCombine
+#> 
+#> Attaching package: 'cyDefine'
+#> The following object is masked from 'package:cyCombine':
+#> 
+#>     batch_correct
 
 # Run the cyDefine pipeline
 classified <- cyDefine(
@@ -77,6 +83,7 @@ classified <- cyDefine(
 #> Running classification to identify similar populations
 #> 
 #> Reference adapted!
+#> Reference adaptation took 4.03 seconds
 #> Warning in batch_correct(reference = reference, query = query, markers =
 #> markers, : Overlapping sample ID(s) found between reference and query. Assuming
 #> that these represent different samples. Adding '_ref' and '_query',
@@ -85,12 +92,15 @@ classified <- cyDefine(
 #> Scaling expression data..
 #> Creating SOM grid..
 #> Batch correcting data..
+#> Batch correction took 15.39 seconds
 #> Making initial projection to filter out redundant cell types of the reference
 #> Excluding the following redundant celltypes from the reference: 
 #> Basophil
 #> Training random forest model using 4 threads
-#> Model training took: 12.73 seconds
-#> Identifying unassigned cells per predicted cell type
+#> Model training took 13.17 seconds
+#> Predicting..
+#> Classification took 19.68 seconds
+#> Outlier detection took 0.08 seconds
 ```
 
 `cyDefine()` returns three objects:
@@ -115,7 +125,7 @@ celltype_colors <- get_distinct_colors(unique(classified$reference$celltype),
 # UMAP of reference and query
 plot_umap(
   classified,
-  example_markers,
+  markers = example_markers,
   sample_n = 5000,
   colors = celltype_colors)
 ```

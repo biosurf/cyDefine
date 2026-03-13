@@ -16,21 +16,25 @@ cyDefine(
   xdim = 6,
   ydim = 6,
   identify_unassigned = TRUE,
-  norm_method = ifelse(using_pbmc, "rank", "scale"),
+  MAD_factor = 2.5,
+  norm_method = "scale",
   covar = NULL,
   load_model = NULL,
   save_model = NULL,
-  mtry = 22,
+  mtry = floor(length(markers)/3),
   splitrule = "gini",
-  use.weights = FALSE,
+  probability = TRUE,
+  use.weights = TRUE,
   min.node.size = 1,
-  num.trees = 300,
+  num.trees = 600,
   num.threads = 1,
   mc.cores = NULL,
   save_adapted_reference = NULL,
   exclude_redundant = FALSE,
   unassigned_name = "unassigned",
-  train_on_unassigned = ifelse(using_pbmc, FALSE, TRUE),
+  identify_type = "probability",
+  probability_threshold = 0.5,
+  train_on_unassigned = FALSE,
   seed = 332,
   verbose = TRUE,
   ...
@@ -71,6 +75,8 @@ If a vector, the workflow iterates. Length should match \code{xdim} or be 1.}
 \item{identify_unassigned}{Boolean indicating whether or not you want to
 identify unassigned cells after classifying the cells.}
 
+\item{MAD_factor}{Median average distance threshold of the outlier to its assigned population}
+
 \item{norm_method}{Normalization method for cyCombine batch correction.
 Should be either 'rank', 'scale', or 'qnorm'. Default is 'scale'.}
 
@@ -85,6 +91,8 @@ Should be either 'rank', 'scale', or 'qnorm'. Default is 'scale'.}
 \item{splitrule}{Splitting rule. For classification and probability estimation "gini", "extratrees" or "hellinger" with default "gini".
 For regression "variance", "extratrees", "maxstat", "beta" or "poisson" with default "variance".
 For survival "logrank", "extratrees", "C" or "maxstat" with default "logrank".}
+
+\item{probability}{Grow a probability forest as in Malley et al. (2012).}
 
 \item{use.weights}{(Default: FALSE) Boolean whether to use celltype frequency as class weights}
 
@@ -106,6 +114,16 @@ path/to/filename.rds - stored as "filename.rds" at path/to/.}
 present in the query.}
 
 \item{unassigned_name}{Name used for unassigned cells}
+
+\item{identify_type}{(Default: probability) Type of outlier detection.
+Options are (multiple allowed in conjunction):
+"probability" - Cut cells with a lower probability than the \code{probability_threshold}.
+"trained" - Train on unassigned in the reference.
+"mad" - MAD threshold on mahalanobis distance in PC space per cell type.
+"maha" - Same as "mad", but in marker space.
+"sd" - Unassign cells with more than 20\% of markers that lay more than two standard deviations from reference expression}
+
+\item{probability_threshold}{Threshold for random forest probability threshold. Use in conjunction with \code{unassigned_type = "probability"}.}
 
 \item{train_on_unassigned}{Boolean indicating whether unassigned cells should be included in model training.
 Recommended when reference and query are samples stemming from the same experiment and unassigned

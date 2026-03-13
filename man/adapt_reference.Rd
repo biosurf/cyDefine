@@ -2,7 +2,7 @@
 % Please edit documentation in R/02_adapt_reference.R
 \name{adapt_reference}
 \alias{adapt_reference}
-\title{Adapt Seurat PBMC reference to query marker panel}
+\title{Adapt PBMC reference to query marker panel}
 \usage{
 adapt_reference(
   reference,
@@ -51,5 +51,5 @@ type classification. Defaults to non-PBMCs.}
 Tibble of adapted reference
 }
 \description{
-Adapt Seurat PBMC reference to query marker panel
+Adapt PBMC reference to query marker panel
 }

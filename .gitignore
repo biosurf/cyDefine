@@ -1,15 +1,13 @@
 .Rproj.user
-inst/doc
 data/seurat_reference.rda
 .Rhistory
 *.DS_Store
 *.Rproj
-doc/
-*.html
 vignettes/*.R
 tmp
 data/*.rds
 diagram.png
-/doc/
+doc/*.R
+doc/*.Rmd
 /Meta/
 figs

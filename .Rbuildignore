@@ -7,6 +7,6 @@ tmp
 .git
 data/.*\.rds
 diagram.png
-^doc$
-^Meta$
 figs
+data/ZYAJ
+data/live_2samples.Rdata

@@ -8,7 +8,8 @@ plot_abundance(
   predicted_populations,
   colors = NULL,
   return_data = FALSE,
-  verbose = TRUE
+  verbose = TRUE,
+  title = "Cell type abundance"
 )
 }
 \arguments{
@@ -21,6 +22,8 @@ HEX colors and names should be the unique cell types}
 returned rather than a ggplot2 object}
 
 \item{verbose}{Verbosity}
+
+\item{title}{Character string for plot title}
 }
 \value{
 A ggplot2 bar plot of abundances

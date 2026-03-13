@@ -9,11 +9,12 @@ classify_cells(
   query,
   markers,
   subsample = 2000,
-  mtry = 22,
+  mtry = floor(length(markers)/3),
   min.node.size = 1,
   splitrule = "gini",
   num.trees = 300,
-  use.weights = FALSE,
+  use.weights = TRUE,
+  probability = TRUE,
   unassigned_name = "unassigned",
   load_model = NULL,
   save_model = NULL,
@@ -43,6 +44,8 @@ For survival "logrank", "extratrees", "C" or "maxstat" with default "logrank".}
 \item{num.trees}{Number of trees.}
 
 \item{use.weights}{(Default: FALSE) Boolean whether to use celltype frequency as class weights}
+
+\item{probability}{Grow a probability forest as in Malley et al. (2012).}
 
 \item{unassigned_name}{Name used for unassigned cells}
 

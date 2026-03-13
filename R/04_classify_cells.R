@@ -85,7 +85,8 @@ classify_cells <- function(
     min.node.size = 1,
     splitrule = "gini",
     num.trees = 300,
-    use.weights = FALSE,
+    use.weights = TRUE,
+    probability = TRUE,
     unassigned_name = "unassigned",
     load_model = NULL,
     save_model = NULL,
@@ -157,9 +158,9 @@ classify_cells <- function(
       x = subset[, markers],                   # Data frame containing the variables
       num.trees = num.trees,                   # Number of trees
       mtry = mtry,                             # Number of variables to possibly split at in each node
-      importance = "impurity",                 # Type of importance metric
+      importance = "impurity",       # Type of importance metric
       write.forest = TRUE,                     # Save the forest model
-      probability = FALSE,                     # If you need probability output for classification
+      probability = probability,               # If you need probability output for classification
       min.node.size = min.node.size,           # Minimum node size
       replace = TRUE,                          # Sampling with replacement
       sample.fraction = 1,                     # Fraction of observations to sample (1 for replacement)
@@ -174,7 +175,7 @@ classify_cells <- function(
     )
     })
     if (verbose) message(
-      "Model training took: ", round(t[[3]], 2), " seconds")
+      "Model training took ", round(t[[3]], 2), " seconds")
 
     # save model
     if (!is.null(save_model)) {
@@ -182,20 +183,24 @@ classify_cells <- function(
     }
   }
 
-  pred <- stats::predict(
+  if (verbose) message("Predicting..")
+  rf_model$predictions <- stats::predict(
     object = rf_model,
     data = query[, markers]
-  )
+  )$predictions
 
-  pred <- pred$predictions
+  model_prediction <- rf_model$predictions
+  if (probability) {
+    model_prediction <- colnames(model_prediction)[apply(model_prediction, 1, which.max)]
+  }
 
   # ARI: aricode::ARI(pred, query$celltype)
   if (return_pred) {
-    return(pred)
+    return(model_prediction)
   }
 
   # add model predictions to query
-  query <- dplyr::bind_cols(query, "model_prediction" = pred) |>
+  query <- dplyr::bind_cols(query, "model_prediction" = model_prediction) |>
     dplyr::arrange(id)
 
   return(list("query" = query, "model" = rf_model))

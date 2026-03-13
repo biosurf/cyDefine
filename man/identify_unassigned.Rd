@@ -6,11 +6,14 @@
 \usage{
 identify_unassigned(
   reference,
-  query,
+  query = NULL,
   markers,
+  model = NULL,
   num.threads = 1,
-  mtry = 22,
-  train_on_unassigned = TRUE,
+  mtry = ceiling(length(markers)/3),
+  identify_type = "probability",
+  probability_threshold = 0.5,
+  train_on_unassigned = FALSE,
   unassigned_name = "unassigned",
   pct_expl_var = 0.95,
   MAD_factor = 2.5,
@@ -25,9 +28,21 @@ identify_unassigned(
 
 \item{markers}{Character vector of available markers}
 
+\item{model}{Random forest model for \verb{identify_type = "probability}.}
+
 \item{num.threads}{Number of threads. Use 0 for all available cores. Default is 2 if not set by options/environment variables (see below).}
 
 \item{mtry}{Number of variables to possibly split at in each node. Default is the (rounded down) square root of the number variables. Alternatively, a single argument function returning an integer, given the number of independent variables.}
+
+\item{identify_type}{(Default: probability) Type of outlier detection.
+Options are (multiple allowed in conjunction):
+"probability" - Cut cells with a lower probability than the \code{probability_threshold}.
+"trained" - Train on unassigned in the reference.
+"mad" - MAD threshold on mahalanobis distance in PC space per cell type.
+"maha" - Same as "mad", but in marker space.
+"sd" - Unassign cells with more than 20\% of markers that lay more than two standard deviations from reference expression}
+
+\item{probability_threshold}{Threshold for random forest probability threshold. Use in conjunction with \code{unassigned_type = "probability"}.}
 
 \item{train_on_unassigned}{Boolean indicating whether unassigned cells should be included in model training.
 Recommended when reference and query are samples stemming from the same experiment and unassigned

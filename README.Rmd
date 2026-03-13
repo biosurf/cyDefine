@@ -37,7 +37,7 @@ BiocManager::install(c("flowCore", "Biobase", "sva"))
 remotes::install_github("biosurf/cyCombine")
 
 # Install cyDefine
-remotes::install_github("biosurf/cyDefine", build_vignettes = TRUE)
+remotes::install_github("biosurf/cyDefine")
 ```
 
 ## Documentation {#documentation}
@@ -101,7 +101,7 @@ celltype_colors <- get_distinct_colors(unique(classified$reference$celltype),
 # UMAP of reference and query
 plot_umap(
   classified,
-  example_markers,
+  markers = example_markers,
   sample_n = 5000,
   colors = celltype_colors)
 ```

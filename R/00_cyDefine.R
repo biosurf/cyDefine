@@ -50,16 +50,15 @@ cyDefine <- function(
     ref.batch = NULL,
     xdim = 6, ydim = 6,
     identify_unassigned = TRUE,
-    norm_method = ifelse(
-      using_pbmc,
-      "rank",
-      "scale"),
+    MAD_factor = 2.5,
+    norm_method = "scale",
     covar = NULL,
     load_model = NULL,
     save_model = NULL,
     mtry = floor(length(markers)/3),
     splitrule = "gini",
-    use.weights = FALSE,
+    probability = TRUE,
+    use.weights = TRUE,
     min.node.size = 1,
     num.trees = 600,
     num.threads = 1,
@@ -67,10 +66,9 @@ cyDefine <- function(
     save_adapted_reference = NULL,
     exclude_redundant = FALSE,
     unassigned_name = "unassigned",
-    train_on_unassigned = ifelse(
-      using_pbmc,
-      FALSE,
-      TRUE),
+    identify_type = "probability",
+    probability_threshold = 0.5,
+    train_on_unassigned = FALSE,
     seed = 332,
     verbose = TRUE,
     ...) {
@@ -81,13 +79,15 @@ cyDefine <- function(
     }
   }
   # Use mc.cores if given (for compatibility with cyCombine)
-  if (!is.null(mc.cores)) num.threads <- mc.cores
+  if (!is.null(mc.cores) & num.threads == 1) num.threads <- mc.cores
+  if (train_on_unassigned) identify_type <- "trained"
 
 
   if (adapt_reference) {
 
     if (verbose) message("Adapting reference to query marker panel")
 
+    t <- system.time({
     reference <- adapt_reference(
       reference = reference,
       markers = markers,
@@ -97,6 +97,9 @@ cyDefine <- function(
       using_pbmc = using_pbmc,
       verbose = verbose
       )
+    })
+    if (verbose) message(
+      "Reference adaptation took ", round(t[[3]], 2), " seconds")
     # Store adapted reference
     if (!is(save_adapted_reference, "NULL")) {
       if (is(save_adapted_reference, "logical")){
@@ -112,6 +115,7 @@ cyDefine <- function(
   }
 
   if (batch_correct) {
+    t <- system.time({
     # Batch correction via cyCombine
     corrected <- batch_correct(
       reference = reference,
@@ -123,9 +127,12 @@ cyDefine <- function(
       ref.batch = ref.batch,
       seed = seed,
       verbose = verbose,
-      num.threads = num.threads,
+      num.threads = ifelse(is.null(mc.cores), num.threads, mc.cores),
       ...
       )
+    })
+    if (verbose) message(
+      "Batch correction took ", round(t[[3]], 2), " seconds")
     reference <- corrected$reference
     query <- corrected$query
 
@@ -148,6 +155,7 @@ cyDefine <- function(
   }
 
   # Canonical cell type assignment
+  t <- system.time({
   classified <- classify_cells(
     reference = reference,
     query = query,
@@ -160,27 +168,38 @@ cyDefine <- function(
     min.node.size = min.node.size,
     num.trees = num.trees,
     use.weights = use.weights,
+    probability = probability,
     num.threads = num.threads,
     seed = seed,
     verbose = verbose
     )
+  })
+  if (verbose) message(
+    "Classification took ", round(t[[3]], 2), " seconds")
   rm(query)
 
 
   # Identification of unassigned cells
   if (identify_unassigned) {
-
+    t <- system.time({
     classified$query <- identify_unassigned(
       query = classified$query,
       reference = reference,
       markers = markers,
+      model = classified$model,
       mtry = mtry,
       num.threads = num.threads,
       unassigned_name = unassigned_name,
+      type = identify_type,
+      probability_threshold = probability_threshold,
       train_on_unassigned = train_on_unassigned,
+      MAD_factor = MAD_factor,
       seed = seed,
       verbose = verbose
       )
+    })
+    if (verbose) message(
+      "Outlier detection took ", round(t[[3]], 2), " seconds")
   }
 
   return (list(

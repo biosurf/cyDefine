@@ -71,6 +71,7 @@ expand_colors <- function(adapted_celltypes, original_celltypes = NULL, colors =
 #' performing the UMAP embedding. Options are "both" (default), "reference",
 #' and "query". "Both" implies that the UMAP embedding is done on both the
 #' reference and query data.
+#' @param metric Distance metric for UMAP computation
 #' @param shuffle Boolean indicating whether rows should be shuffled before plotting
 #' @param down_sample Boolean indicating whether cells should be down-sampled
 #' @param sample_n Number of cells to sample from each of reference and query,
@@ -113,15 +114,21 @@ plot_umap <- function(reference,
   check_package("patchwork")
   if (is(add_centroids, "character")) {
     check_package("ggforce")
-    check_package("ggrepel")
+    if (R.version$minor < "4.5") {
+      check_package("ggrepel", repo = "github", git_repo = "slowkow/ggrepel@41f47d9ffa5aacf66a7ec8f4ecfe6dd7d5408b01")
+    } else {
+      check_package("ggrepel")
+    }
+
   }
 
 
   # Extract data based on input type
   if (is(reference, "list")) {
-    reference <- reference$reference
     query <- reference$query
+    reference <- reference$reference
   }
+  if (!query_col %in% colnames(query)) query_col <- "model_prediction"
   if ("cell_id" %in% colnames(reference)) id <- "cell_id" else id <- "id"
 
   if (is.null(markers)) markers <- cyCombine::get_markers(reference)
@@ -1101,7 +1108,7 @@ plot_expression_correlation <- function(
       .groups = "drop"
     ) |>
     dplyr::left_join(correlation_data, by = "celltype") |>
-    dplyr::mutate(label = paste0("r² = ", r_squared))
+    dplyr::mutate(label = paste0("R", "\u00B2"," = ", r_squared))
 
   # Create faceted plot
   p <- ggplot2::ggplot(combined_data) +
@@ -1167,7 +1174,7 @@ plot_expression_correlation <- function(
 #' @return ggplot2 heatmap showing variable importance by cell type
 #' @export
 #'
-plot_marker_importance_cell <- function(reference, col = "celltype", markers = get_markers(reference), top_n = length(markers)) {
+plot_marker_importance_cell <- function(reference, col = "celltype", markers = cyCombine::get_markers(reference), top_n = length(markers)) {
 
   cell_types <- unique(reference[[col]])
   importance_matrix <- matrix(0, nrow = length(markers), ncol = length(cell_types))
@@ -1246,7 +1253,7 @@ plot_top_marker_importance <- function(
     markers = NULL,
     n_markers = 5) {
 
-  if (is.null(markers)) markers <- get_markers(reference)
+  if (is.null(markers)) markers <- cyCombine::get_markers(reference)
 
   cell_types <- unique(reference[[col]])
   minimal_sets <- list()
