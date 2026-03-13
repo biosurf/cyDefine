@@ -65,6 +65,12 @@ cyDefine <- function(
     mc.cores = NULL,
     save_adapted_reference = NULL,
     exclude_redundant = FALSE,
+    exclude_celltypes = c(
+      "Doublet",
+      "Platelet",
+      "Eryth",
+      "HSPC"
+    ),
     unassigned_name = "unassigned",
     identify_type = "probability",
     probability_threshold = 0.5,
@@ -95,6 +101,7 @@ cyDefine <- function(
       mtry = mtry,
       min_f1 = min_f1,
       using_pbmc = using_pbmc,
+      exclude_celltypes = exclude_celltypes,
       verbose = verbose
       )
     })
