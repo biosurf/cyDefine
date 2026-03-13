@@ -1,6 +1,6 @@
 #' Modify query marker names to match reference marker names
 #'
-#' @param using_pbmc Boolean indicating whether or not the Seurat PBMC atlas is
+#' @param using_pbmc Boolean indicating whether or not the Universal PBMC atlas is
 #' used as reference
 #' @param ref_markers Character vector of reference markers
 #' @param map_specific_from Optional: used together with `map_specific_to`.
@@ -153,7 +153,7 @@ map_marker_names <- function(
       warning(
         "The following markers were not detected to be in the reference and were excluded from the data:\n  ",
         paste(not_in_ref, collapse = ", "), "\n  ",
-        "Markers of the Seurat PBMC reference can be found in 'pbmc_markers'. ",
+        "Markers of the Universal PBMC reference can be found in 'pbmc_markers'. ",
         "If needed, markers can be manually mapped to reference markers using the 'map_specfic_from' and 'map_specfic_to' arguments"
       )
 
@@ -454,7 +454,7 @@ excl_redundant_populations <- function(
 #' FALSE, if you want to keep all cell types of the reference. Defaults to TRUE.
 #' @param min_f1 Minimum F1 score required for two cell types to be separated
 #' @param exclude_celltypes Only relevant if `using_pbmc = TRUE`. Character
-#' vector of cell types of the Seurat PBMC reference to NOT consider during cell
+#' vector of cell types of the Universal PBMC reference to NOT consider during cell
 #' type classification. Defaults to non-PBMCs.
 #' @param celltype_col Column with celltype information.
 #' @inheritParams map_marker_names

@@ -190,7 +190,7 @@ cyDefine <- function(
       mtry = mtry,
       num.threads = num.threads,
       unassigned_name = unassigned_name,
-      type = identify_type,
+      identify_type = identify_type,
       probability_threshold = probability_threshold,
       train_on_unassigned = train_on_unassigned,
       MAD_factor = MAD_factor,
