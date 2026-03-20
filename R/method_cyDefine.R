@@ -1,6 +1,9 @@
 library(argparse)
+library(dplyr)
 library(cyCombine)
-library(cyDefine)
+# library(cyDefine)
+devtools::load_all("../cyDefine")
+
 
 # Define argument parser
 parser <- ArgumentParser(description="Run cyDefine")
@@ -50,6 +53,9 @@ classified <- cyDefine(
   using_pbmc = FALSE,
   batch_correct = batch_correct,
   identify_unassigned = TRUE,
+  identify_type = "probability",
+  probability_threshold = 0.8,
+  # MAD_factor = 2.5,
   train_on_unassigned = unassigned,
   unassigned_name = input$unassigned_name,
   seed = seed,

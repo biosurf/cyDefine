@@ -1,6 +1,6 @@
 #!/bin/bash
 
-datasets=("Levine13" "Levine32" "POISED")
+datasets=("POISED")
 echo "Running cyDefine"
 for dataset in "${datasets[@]}"; do
     echo "Processing dataset: $dataset"

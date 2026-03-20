@@ -7,20 +7,55 @@ library(ggpubr)
 # Define colors to match your previous plots
 method_colors <- c(
   "cyDefine" = "#A8D8A8",
-  "CyTOF Linear\nClassifier" = "#F4A460",
   "CyAnno" = "#FA8072",
-  "Spectre" = "#87CEEB"
+  "Spectre" = "#87CEEB",
+  "CyTOF Linear\nClassifier" = "#F4A460"
 )
+
+
+# Runtimes ----
+
+df_runtimes <- readRDS("results/runtimes.rds")
+
+# Runtime bar plot by dataset and method
+fig_runtime <- df_runtimes %>%
+  ggplot(aes(x = dataset, y = runtime, fill = method)) +
+  geom_col(position = position_dodge(width = 1), alpha = 0.8) +
+  geom_text(aes(
+    label = paste0(round(runtime, 1), "s")),
+    vjust = -0.5,
+    position = position_dodge(width = 1)) +
+  facet_wrap(~unassigned_label) +
+  scale_fill_manual(values = method_colors) +
+  scale_y_sqrt(labels = scales::label_number(suffix = "s")) +
+  labs(
+    title = "Runtime Comparison",
+    x = "Dataset",
+    y = "Runtime (seconds, sqrt scale)",
+    fill = "Method"
+  ) +
+  theme_pubr() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "bottom"
+  )
+
+
+
+# Save plot
+ggsave("figs/fig_runtime.png", fig_runtime, width = 16, height = 8, dpi = 300)
 
 
 # F1 ----
 
 df_f1 <- readRDS("results/F1.rds")
 
+df_f1$method[df_f1$method == "CLC"] <- "CyTOF Linear\nClassifier"
 
 ## Figure 3ab - Heatmap ----
 # Calculate average F1 scores by dataset and method
 df_heatmap <- df_f1 |>
+  mutate(method = factor(method, levels = c("CyTOF Linear\nClassifier", "Spectre", "CyAnno", "cyDefine"))) |>
   group_by(dataset, method, unassigned) |>
   summarise(
     avg_f1 = median(f1_score, na.rm = TRUE),
@@ -117,6 +152,7 @@ ggsave("figs/Figure3ab.png", fig3ab, width = 10, height = 5, dpi = 300)
 
 ## Figure 3c Boxplot ----
 fig3c <- df_f1 |>
+  mutate(method = factor(method, levels = c("CyTOF Linear\nClassifier", "Spectre", "CyAnno", "cyDefine"))) |>
   dplyr::filter(stringr::str_detect(file, "w_unassigned")) |>
   ggplot(aes(x = dataset, y = f1_score, fill = method)) +
   geom_boxplot(position = position_dodge(width = 0.8),
@@ -146,42 +182,11 @@ ggsave(plot = fig3c, filename = "figs/Figure3c.png", width = 10, height = 5, dpi
 
 
 # Figure 3
-fig3 <- fig3ab / fig3c  +
+fig3 <- fig3ab / fig3c / fig_runtime  +
   plot_annotation(tag_levels = "a")
 # print(fig3)
-ggsave(plot = fig3, filename = "figs/Figure3.png", width = 15, height = 10)
+ggsave(plot = fig3, filename = "figs/Figure3.png", width = 15, height = 17)
 
 
 
 
-# Runtimes ----
-
-df_runtimes <- readRDS("results/runtimes.rds")
-
-# Runtime bar plot by dataset and method
-fig_runtime <- df_runtimes %>%
-  ggplot(aes(x = dataset, y = runtime, fill = method)) +
-  geom_col(position = position_dodge(width = 1), alpha = 0.8) +
-  geom_text(aes(
-    label = paste0(round(runtime, 1), "s")),
-    vjust = -0.5,
-    position = position_dodge(width = 1)) +
-  facet_wrap(~unassigned_label) +
-  scale_fill_manual(values = method_colors) +
-  scale_y_sqrt(labels = scales::label_number(suffix = "s")) +
-  labs(
-    title = "Runtime Comparison",
-    x = "Dataset",
-    y = "Runtime (seconds, sqrt scale)",
-    fill = "Method"
-  ) +
-  theme_pubr() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    legend.position = "bottom"
-  )
-
-
-
-# Save plot
-ggsave("figs/fig_runtime.png", fig_runtime, width = 16, height = 8, dpi = 300)
