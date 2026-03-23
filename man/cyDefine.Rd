@@ -31,9 +31,10 @@ cyDefine(
   mc.cores = NULL,
   save_adapted_reference = NULL,
   exclude_redundant = FALSE,
+  exclude_celltypes = c("Doublet", "Platelet", "Eryth", "HSPC"),
   unassigned_name = "unassigned",
   identify_type = "probability",
-  probability_threshold = 0.5,
+  probability_threshold = 0.8,
   train_on_unassigned = FALSE,
   seed = 332,
   verbose = TRUE,
@@ -112,6 +113,10 @@ path/to/filename.rds - stored as "filename.rds" at path/to/.}
 
 \item{exclude_redundant}{Exclude celltypes in the reference that are not
 present in the query.}
+
+\item{exclude_celltypes}{Only relevant if \code{using_pbmc = TRUE}. Character
+vector of cell types of the Universal PBMC reference to NOT consider during cell
+type classification. Defaults to non-PBMCs.}
 
 \item{unassigned_name}{Name used for unassigned cells}
 

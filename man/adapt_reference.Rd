@@ -24,7 +24,7 @@ adapt_reference(
 \item{markers}{Character vector of available markers present in both query
 and reference.}
 
-\item{using_pbmc}{Boolean indicating whether or not the Seurat PBMC atlas is
+\item{using_pbmc}{Boolean indicating whether or not the Universal PBMC atlas is
 used as reference}
 
 \item{initial_project}{Boolean indicating whether cyDefine should perform an
@@ -32,7 +32,7 @@ initial projection to remove redundant cell types of the reference. Set to
 FALSE, if you want to keep all cell types of the reference. Defaults to TRUE.}
 
 \item{exclude_celltypes}{Only relevant if \code{using_pbmc = TRUE}. Character
-vector of cell types of the Seurat PBMC reference to NOT consider during cell
+vector of cell types of the Universal PBMC reference to NOT consider during cell
 type classification. Defaults to non-PBMCs.}
 
 \item{celltype_col}{Column with celltype information.}

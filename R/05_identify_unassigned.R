@@ -94,6 +94,7 @@ MAD_max_distance <- function(distances, MAD_factor = 3) {
 #'  "sd" - Unassign cells with more than 20% of markers that lay more than two standard deviations from reference expression
 #' @importFrom pbmcapply pbmclapply
 #' @importFrom stats quantile sd
+#' @importFrom dplyr group_map
 #' @return A tibble of unassigned cells
 #' @export
 #'
@@ -104,7 +105,7 @@ identify_unassigned <- function(reference,
                                 num.threads = 1,
                                 mtry = ceiling(length(markers)/3),
                                 identify_type = "probability",
-                                probability_threshold = 0.5,
+                                probability_threshold = 0.8,
                                 train_on_unassigned = FALSE,
                                 unassigned_name = "unassigned",
                                 pct_expl_var = 0.95,
@@ -470,11 +471,12 @@ identify_unassigned <- function(reference,
   if ("maha" %in% identify_type) {
     check_package("purrr")
     check_package("tidyr")
+    check_package("Rfast")
 
     # Compute per-celltype covariance matrices
     ref_params <- reference |>
       group_by(celltype) |>
-      group_map(~ {
+      dplyr::group_map(~ {
         mat     <- .x |> select(all_of(markers)) |> as.matrix()
         cov_fit <- list(center = colMeans(mat), cov = cov(mat))
       }) |>

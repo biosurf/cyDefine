@@ -294,8 +294,13 @@ adding_centroids <- function(df, embedding_plot, add_centroids, col, highlight_l
       if (highlight_labels) {
         merge_list <- get_merge_list(df)
         embedding_plot <- embedding_plot +
+          ggrepel::geom_text_repel(
+            data = centroids |> dplyr::filter(!celltype %in% names(merge_list)),
+            aes(label = .data[[col]]),
+            color = "#696969", size = 3, vjust = 1,
+            max.overlaps = Inf) +
           ggforce::geom_mark_ellipse(data = centroids |> dplyr::filter(celltype %in% names(merge_list)),
-            ggplot2::aes(label = .data[[col]]), label.fontsize = 7.5,
+            ggplot2::aes(label = .data[[col]]), label.fontsize = 7,
               label.buffer = unit(1.5, "mm"),
             con.size = 0.3, con.type = "straight", con.cap = unit(2 , "mm"), con.border = "one",
                 expand = unit(0.01, "mm"), label.fill = NA)
@@ -1118,7 +1123,7 @@ plot_expression_correlation <- function(
                alpha = 0.8) +
     ggplot2::scale_color_manual(values = marker_colors) +
     ggplot2::geom_smooth(method = "lm", se = FALSE, color = "black",
-                linetype = "dashed", size = 0.5) +
+                linetype = "dashed", linewidth = 0.5) +
     ggplot2::facet_wrap(~ celltype, ncol = ncol, scales = "free") +
     ggplot2::labs(
       y = paste(ref_name, "expression"),
@@ -1131,7 +1136,7 @@ plot_expression_correlation <- function(
       axis.title = ggplot2::element_text(size = 9),
       axis.text = ggplot2::element_text(size = 8),
       panel.grid.minor = ggplot2::element_blank(),
-      panel.border = ggplot2::element_rect(color = "gray80", fill = NA, size = 0.5)
+      panel.border = ggplot2::element_rect(color = "gray80", fill = NA, linewidth = 0.5)
     )
 
   # Add correlation annotations

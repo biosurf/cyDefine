@@ -98,6 +98,7 @@ umap_ref$plot
 ## OMIP23 - Adapt reference
 
 ### Map markers
+
 ```{r, mapped_dummy_omip23}
 # Create a dummy query data frame based on OMIP23 markers
 dummy_query <- data.frame(matrix(0, nrow = 1, ncol = length(omip23)))
@@ -265,7 +266,7 @@ full_plot_small <- umap_ref$plot + umap_ref_omip23$plot + plot_adapted_omip23 + 
 
 
 # full_plot
-ggsave(full_plot_small, filename = "../figs/adapt_reference_omip23_omip69.png", units = "cm", height = 25, width = 35)
+ggsave(full_plot_small, filename = "../figs/adapt_reference_omip23_omip69.pdf", units = "cm", height = 25, width = 35)
 full_plot_small
 ```
 

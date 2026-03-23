@@ -7,7 +7,7 @@
 plot_marker_importance_cell(
   reference,
   col = "celltype",
-  markers = get_markers(reference),
+  markers = cyCombine::get_markers(reference),
   top_n = length(markers)
 )
 }

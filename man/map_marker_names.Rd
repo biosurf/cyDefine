@@ -22,7 +22,7 @@ map_marker_names(
 
 \item{ref_markers}{Character vector of reference markers}
 
-\item{using_pbmc}{Boolean indicating whether or not the Seurat PBMC atlas is
+\item{using_pbmc}{Boolean indicating whether or not the Universal PBMC atlas is
 used as reference}
 
 \item{map_specific_from}{Optional: used together with \code{map_specific_to}.

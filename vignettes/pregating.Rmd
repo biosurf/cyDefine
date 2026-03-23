@@ -1,5 +1,5 @@
 ---
-title: "Automated pregating using cyDefine"
+title: "Automated pre-gating using cyDefine"
 author: "Søren H Dam"
 date: "Last updated: `r format(Sys.Date(), '%Y.%m.%d')`"
 output: 
@@ -7,7 +7,7 @@ output:
   theme: hpstr
   highlight: vignette
 vignette: >
-  %\VignetteIndexEntry{pregating}
+  %\VignetteIndexEntry{Pre-gating}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -22,13 +22,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Phenotype transfer of non-pregated cells with cyDefine
+## Phenotype transfer of non-pre-gated cells with cyDefine
 
-The purpose of pregating is to ensure the downstream analyses solely concern intact, living, singlet cells.
+The purpose of pre-gating is to ensure the downstream analyses solely concern intact, living, singlet cells.
 
-In this vignette, we demonstrate that cyDefine is capable of automating this process by labeling otherwise pregated cells as *unassigned*. Thus, cyDefine can alleviate another tedious process.
+In this vignette, we demonstrate that cyDefine is capable of automating this process by labeling otherwise pre-gated cells as *unassigned*. Thus, cyDefine can alleviate another tedious process.
 
-For the demonstration, we replicate a pregating strategy shown in [this](https://biosurf.org/cytof_data_scientist.html#35_Pre-gating) primer on biosurf.org using the same data.
+For the demonstration, we replicate a pre-gating strategy shown in [this](https://biosurf.org/cytof_data_scientist.html#35_Pre-gating) primer on biosurf.org using the same data.
 The first step is to download the sample *081216-Mike-HIMC ctrls-001_01_normalized.fcs* from FlowRepository (ID: [FR-FCM-ZYAJ](https://flowrepository.org/id/FR-FCM-ZYAJ)).
 
 ## Dependencies
@@ -77,9 +77,9 @@ raw <- prepare_data(
 raw
 ```
 
-## Pregating
+## Pre-gating
 
-In this pregating, we keep gated cells, but label them as either *Beads, Debris, Dead, or Doublets* for the analysis.
+In this pre-gating, we keep gated cells, but label them as either *Beads, Debris, Dead, or Doublets* for the analysis.
 
 ### Gating for cells
 
@@ -214,7 +214,7 @@ raw <- raw |>
     TRUE                 ~ "Cells"
   ))
 ```
-This pregating leaves us with the following number of kept and discarded cells:
+This pre-gating leaves us with the following number of kept and discarded cells:
 
 ```{r pregating_result}
 table(raw$pregating)
@@ -225,7 +225,7 @@ table(raw$pregating)
 
 ## Adapt PBMC reference
 
-With the pregating in place, we select a reference for our analysis.
+With the pre-gating in place, we select a reference for our analysis.
 Having a manually gated sample from the same experiment would be ideal. However, *cyDefine* enables us to use a universal reference.
 Therefore, we use the universal PBMC reference prebuilt in *cyDefine*.
 
@@ -285,7 +285,7 @@ plot_diagram(reference_adapted)
 
 ## Classify all live cells
 
-Now, we classify all live cells, i.e., cells retained after the pregating.
+Now, we classify all live cells, i.e., cells retained after the pre-gating.
 We leave *identify_unassigned = TRUE* to detect outliers, e.g., beads, debris, dead, and doublets.
 
 ```{r classify_live}
@@ -315,7 +315,7 @@ classified_live <- cyDefine(
 
 ## Classify non-pre-gated cells
 
-Then, we do the exact same, but without removing cells from the pregating.
+Then, we do the exact same, but without removing cells from the pre-gating.
 We use the exact same settings to make it as comparable as possible.
 
 ```{r classify_raw}
@@ -340,24 +340,25 @@ classified_raw <- cyDefine(
 
 ## Identify unassigned
 
-After the classification, we identify unassigned using a per-celltype mahalanobis distance threshold with a 2.5 MAD factor and using a random forest probability threshold of 60% certainty. This is a rather tight gating, but that is reasonable when trying to capture debris, doublets, and dead cells.
+<-- per-celltype mahalanobis distance threshold with a 2.5 MAD factor and using a --!>
+After the classification, we identify unassigned using a simple random forest probability threshold of 80% certainty. This is a rather tight gating, but that is reasonable when trying to capture debris, doublets, and dead cells.
 
 ```{r identify_unassigned}
 
 classified_live$query <- identify_unassigned(
   classified_live,
   markers = markers,
-  identify_type = c("maha", "probability"),
-  probability_threshold = 0.6,
-  MAD_factor = 2.5
+  identify_type = "probability",#c("maha", "probability"),
+  probability_threshold = 0.8,
+  # MAD_factor = 2.5
 )
 
 classified_raw$query <- identify_unassigned(
   classified_raw,
   markers = markers,
-  identify_type = c("maha", "probability"),
-  probability_threshold = 0.6,
-  MAD_factor = 2.5,
+  identify_type = "probability",#c("maha", "probability"),
+  probability_threshold = 0.8,
+  # MAD_factor = 2.5,
 )
 
 ```
@@ -401,9 +402,9 @@ umap_raw <- cyDefine::plot_umap(
 (umap_live + umap_raw) + plot_layout(guides = "collect")
 ```
 
-### UMAP of pregated cells
+### UMAP of pre-gated cells
 
-Here, we visually compare the pregating labels with the celltype predictions. We hope to see that most pregated cells are grouped in UMAP space, and those groups are correctly identified as "unassigned".
+Here, we visually compare the pre-gating labels with the celltype predictions. We hope to see that most pre-gated cells are grouped in UMAP space, and those groups are correctly identified as "unassigned".
 
 That is exactly what we see, especially for beads and the clusters of doublets and dead cells. Debris and many dead cells appear harder to discern, at least from a UMAP.
 
@@ -417,7 +418,7 @@ umap_pregating <- cyDefine::plot_umap(
   build_umap_on = "reference",
   ref_col = "predicted_celltype",
   query_col = "pregating",
-  title = c("Prediction", "Pregating"),
+  title = c("Prediction", "Pre-gating"),
   colors = pregating_colors,
   down_sample = TRUE,
   sample_n = 25000)
@@ -436,13 +437,13 @@ We also hope to see that the proportion of cell types remains nearly identical b
 ab_live <- classified_live$query |> 
   filter(predicted_celltype != "unassigned") |>
   pull(predicted_celltype) |> 
-  plot_abundance(colors = celltype_colors, title = "Cell type abundances - pregated") 
+  plot_abundance(colors = celltype_colors, title = "Cell type abundances - pre-gated") 
 
 ab_raw <- classified_raw$query |> 
   filter(predicted_celltype != "unassigned") |>
   # filter(pregating == "Cells") |>
   pull(predicted_celltype) |> 
-  plot_abundance(colors = celltype_colors, title = "Cell type abundances - non-pregated")
+  plot_abundance(colors = celltype_colors, title = "Cell type abundances - non-pre-gated")
 
 (ab_live / ab_raw) & ggplot2::theme(
       axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, vjust = 1))
@@ -450,9 +451,9 @@ ab_raw <- classified_raw$query |>
 
 ## Heatmap of prediction differences
 
-Lastly, we demonstrate the accuracy of the predictions with a heatmap comparing the predictions of live and raw, where the live pregated cells are appended with labels.
+Lastly, we demonstrate the accuracy of the predictions with a heatmap comparing the predictions of live and raw, where the live pre-gated cells are appended with labels.
 
-The bottom row in the heatmap shows which celltypes were identified as unassigned in the raw data, compared to how the manual pregating and prediction on live cells classifies those cells.
+The bottom row in the heatmap shows which celltypes were identified as unassigned in the raw data, compared to how the manual pre-gating and prediction on live cells classifies those cells.
 It appears the dead cells are particularly difficult to identify, which makes sense, as the viability stain is not used.
 
 
@@ -630,11 +631,11 @@ ht <- Heatmap(
 
   row_names_side = "left",
   
-  column_title = "Predicted celltypes of live cells + pregated labels",
+  column_title = "Predicted celltypes of live cells + pre-gated labels",
   # column_title_side = "bottom",
   column_title_gp = gpar(fontsize = 12),
   
-  row_title = "Predicted celltypes on non-pregated cells",
+  row_title = "Predicted celltypes on non-pre-gated cells",
   row_title_side = "right",
   row_title_gp = gpar(fontsize = 12),
   
@@ -653,13 +654,20 @@ ht <- Heatmap(
     labels = c("25", "50", "75", "100"),
     color_bar = "continuous",
     legend_direction = "vertical"
-  )
+  ), 
 )
 
+# png("../figs/Pregating_Heatmap.png", 
+#     width = 2400*2,  # Width in pixels
+#     height = 1600*2, # Height in pixels
+#     res = 300) 
+# pdf("../figs/Pregating_Heatmap.pdf", width = 24, height = 16)
 draw(ht,
-     column_title = "Cell type prediction on non-pregated vs pregated data",
+     column_title = "Cell type prediction on non-pre-gated vs pre-gated data",
      column_title_gp = gpar(fontsize = 18, fontface = "bold"),
-     padding = unit(c(5, 5, 5, 5), "mm"))
+     padding = unit(c(5, 20, 5, 5), "mm"))
+
+# dev.off()
 ```
 
 

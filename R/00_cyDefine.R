@@ -73,7 +73,7 @@ cyDefine <- function(
     ),
     unassigned_name = "unassigned",
     identify_type = "probability",
-    probability_threshold = 0.5,
+    probability_threshold = 0.8,
     train_on_unassigned = FALSE,
     seed = 332,
     verbose = TRUE,

@@ -10,3 +10,5 @@ diagram.png
 figs
 data/ZYAJ
 data/live_2samples.Rdata
+^doc$
+^Meta$

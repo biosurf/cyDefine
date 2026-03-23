@@ -12,7 +12,7 @@ identify_unassigned(
   num.threads = 1,
   mtry = ceiling(length(markers)/3),
   identify_type = "probability",
-  probability_threshold = 0.5,
+  probability_threshold = 0.8,
   train_on_unassigned = FALSE,
   unassigned_name = "unassigned",
   pct_expl_var = 0.95,
