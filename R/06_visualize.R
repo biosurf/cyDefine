@@ -188,8 +188,8 @@ plot_umap <- function(reference,
       )
 
     colnames(full_umap) <- c("UMAP1", "UMAP2")
-    xlim <- c(min(full_umap$UMAP1), max(full_umap$UMAP1))
-    ylim <- c(min(full_umap$UMAP2), max(full_umap$UMAP2))
+    xlim <- c(min(full_umap[, 1]), max(full_umap[, 1]))
+    ylim <- c(min(full_umap[, 2]), max(full_umap[, 2]))
 
     ref_umap <- full_umap[1:nrow(reference), ]
     if (!is.null(query)) {
