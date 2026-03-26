@@ -188,11 +188,14 @@ plot_umap <- function(reference,
       )
 
     colnames(full_umap) <- c("UMAP1", "UMAP2")
+    xlim <- c(min(full_umap$UMAP1), max(full_umap$UMAP1))
+    ylim <- c(min(full_umap$UMAP2), max(full_umap$UMAP2))
 
     ref_umap <- full_umap[1:nrow(reference), ]
     if (!is.null(query)) {
       query_umap <- full_umap[(nrow(reference) + 1):nrow(full_umap), ]
     }
+
 
     # ref_umap <- full_umap[1:nrow(reference), ]
     # query_umap <- full_umap[(nrow(reference) + 1):nrow(full_umap), ]
@@ -214,6 +217,8 @@ plot_umap <- function(reference,
 
     ref_umap <- ref_umap_embed$embedding
     colnames(ref_umap) <- c("UMAP1", "UMAP2")
+    xlim <- NULL
+    ylim <- NULL
 
     if (verbose) {
       message("Projecting query cells onto reference UMAP embedding")
@@ -236,6 +241,8 @@ plot_umap <- function(reference,
     colors = colors,
     title = title[1],
     highlight_labels = highlight_labels,
+    xlim = xlim,
+    ylim = ylim,
     legend_title = legend_title)
 
   if (is.null(query)) {
@@ -252,6 +259,8 @@ plot_umap <- function(reference,
     col = query_col,
     colors = colors,
     title = title[2],
+    xlim = xlim,
+    ylim = ylim,
     highlight_labels = highlight_labels,
     legend_title = legend_title)
 
@@ -354,7 +363,7 @@ adding_centroids <- function(df, embedding_plot, add_centroids, col, highlight_l
 #' @return ggplot2 object showing the embedding visualization
 #' @export
 plot_embedding <- function(embedding, col, colors = NULL, title = "", add_centroids = c(FALSE, TRUE, "text", "label"), highlight_labels = FALSE,
-                           legend_title = ggplot2::waiver(), slot = "data") {
+                           legend_title = ggplot2::waiver(), slot = "data", xlim = NULL, ylim = NULL) {
 
   add_centroids <- as.character(add_centroids) |> match.arg(add_centroids)
 
@@ -413,6 +422,11 @@ plot_embedding <- function(embedding, col, colors = NULL, title = "", add_centro
     ggplot2::theme_bw() +
     ggplot2::ggtitle(title) +
     color_scale(col, colors, legend_title)
+
+  if (!is.null(xlim) & !is.null(ylim)) {
+    embedding_plot <- embedding_plot +
+      ggplot2::coord_cartesian(xlim = xlim, ylim = ylim)
+  }
 
   if (add_centroids != "FALSE") embedding_plot <-
     adding_centroids(embedding, embedding_plot, add_centroids, col, highlight_labels)
