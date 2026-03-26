@@ -94,6 +94,8 @@ plot_umap <- function(reference,
                       ref_col = "celltype",
                       build_umap_on = c("both", "reference"),
                       metric = "euclidean",
+                      n_neighbors = 15,
+                      min_dist = 0.2,
                       shuffle = TRUE,
                       down_sample = TRUE,
                       sample_n = 10000,
@@ -179,9 +181,9 @@ plot_umap <- function(reference,
     # UMAP embedding of both reference and query
     full_umap <- uwot::umap(
         umap_data,
-        n_neighbors = 15,
-        min_dist = 0.2,
-        metric = "euclidean",
+        n_neighbors = n_neighbors,
+        min_dist = min_dist,
+        metric = metric,
         ret_model = FALSE
       )
 
@@ -204,9 +206,9 @@ plot_umap <- function(reference,
     # UMAP embedding of reference
     ref_umap_embed <- reference[, markers] |>
       uwot::umap(
-        n_neighbors = 15,
-        min_dist = 0.2,
-        metric = "euclidean",
+        n_neighbors = n_neighbors,
+        min_dist = min_dist,
+        metric = metric,
         ret_model = TRUE
       )
 
