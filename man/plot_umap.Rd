@@ -14,6 +14,8 @@ plot_umap(
   ref_col = "celltype",
   build_umap_on = c("both", "reference"),
   metric = "euclidean",
+  n_neighbors = 15,
+  min_dist = 0.2,
   shuffle = TRUE,
   down_sample = TRUE,
   sample_n = 10000,

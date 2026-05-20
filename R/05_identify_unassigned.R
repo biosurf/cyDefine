@@ -138,7 +138,7 @@ identify_unassigned <- function(reference,
       nrow()
 
     if (n_unassigned < 20) {
-      warning(
+      message(
         "Too few cells labeled '", unassigned_name, "' are present in the reference (",
         n_unassigned, ") to train on these cells. ",
         "Please modify the 'unassigned_name' or use the unsupervised analysis type.",

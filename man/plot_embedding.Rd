@@ -12,7 +12,9 @@ plot_embedding(
   add_centroids = c(FALSE, TRUE, "text", "label"),
   highlight_labels = FALSE,
   legend_title = ggplot2::waiver(),
-  slot = "data"
+  slot = "data",
+  xlim = NULL,
+  ylim = NULL
 )
 }
 \arguments{

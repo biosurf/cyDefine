@@ -11,3 +11,4 @@ doc/*.R
 doc/*.Rmd
 /Meta/
 figs
+/doc/
