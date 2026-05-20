@@ -172,7 +172,7 @@ identify_unassigned <- function(reference,
           nrow()
 
         if (n_popu < 30) {
-          warning(
+          message(
             "Too few cells are available for celltype '", popu,
             "' for modelling, thus no cells predicted to belong to ", popu,
             " will be identified as 'unassigned'"
