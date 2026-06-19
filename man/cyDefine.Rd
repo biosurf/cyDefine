@@ -24,7 +24,7 @@ cyDefine(
   mtry = floor(length(markers)/3),
   splitrule = "gini",
   probability = TRUE,
-  use.weights = TRUE,
+  use.weights = FALSE,
   min.node.size = 1,
   num.trees = 600,
   num.threads = 1,

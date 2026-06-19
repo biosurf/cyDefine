@@ -586,6 +586,7 @@ plot_abundance <- function(
 #' @param query_name Character string for query dataset label in legend (default "Query")
 #' @param colors Named vector of colors for datasets. If NULL, uses default green
 #' for reference and orange for query
+#' @param CLR CLR transform abundances, using Seurat's zero-bound CLR implementation.
 #' @param return_data Logical indicating whether to return the processed data instead
 #' of the plot (default FALSE)
 #'
@@ -600,6 +601,7 @@ plot_abundance_comparison <- function(
     query_col = "model_prediction",
     ref_name = "Reference",
     query_name = "Query",
+    CLR = FALSE,
     colors = NULL,
     return_data = FALSE
     ) {
@@ -619,7 +621,8 @@ plot_abundance_comparison <- function(
     dplyr::rename(celltype = ref_celltypes) |>
     dplyr::mutate(
       prop = n / sum(n),
-      dataset = ref_name
+      dataset = ref_name,
+      clr = cyCombine:::clr_norm(n)
     )
 
   # Calculate proportions for query
@@ -628,7 +631,8 @@ plot_abundance_comparison <- function(
     dplyr::rename(celltype = query_celltypes) |>
     dplyr::mutate(
       prop = n / sum(n),
-      dataset = query_name
+      dataset = query_name,
+      clr = cyCombine:::clr_norm(n)
     )
 
   # Combine data
@@ -645,7 +649,8 @@ plot_abundance_comparison <- function(
     dplyr::left_join(combined_freq, by = c("celltype", "dataset")) |>
     dplyr::mutate(
       n = tidyr::replace_na(n, 0),
-      prop = tidyr::replace_na(prop, 0)
+      prop = tidyr::replace_na(prop, 0)*100,
+      clr = tidyr::replace_na(clr, 0),
     )
 
   if (return_data) {
@@ -659,23 +664,43 @@ plot_abundance_comparison <- function(
   }
 
   # Create grouped bar plot
-  p <- ggplot2::ggplot(complete_data) +
-    ggplot2::aes(x = celltype, y = prop * 100, fill = dataset) +
-    ggplot2::geom_bar(stat = "identity", position = "dodge", width = 0.8) +
-    ggplot2::scale_fill_manual(values = colors) +
-    ggplot2::labs(
-      x = "Cell Type",
-      y = "Percentage (%)",
-      fill = "Dataset"
-    ) +
-    ggplot2::theme_minimal() +
-    ggplot2::theme(
-      axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, vjust = 1),
-      legend.position = "bottom",
-      panel.grid.major.x = ggplot2::element_blank(),
-      panel.grid.minor = ggplot2::element_blank()
-    ) +
-    ggplot2::scale_y_continuous(labels = function(x) paste0(x, "%"))
+  if (CLR) {
+    p <- ggplot2::ggplot(complete_data) +
+      ggplot2::aes(x = celltype, y = clr, fill = dataset) +
+      ggplot2::geom_bar(stat = "identity", position = "dodge", width = 0.8) +
+      ggplot2::scale_fill_manual(values = colors) +
+      ggplot2::labs(
+        x = "Cell Type",
+        y = "CLR abundances",
+        fill = "Dataset"
+      ) +
+      ggplot2::theme_minimal() +
+      ggplot2::theme(
+        axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, vjust = 1),
+        legend.position = "bottom",
+        panel.grid.major.x = ggplot2::element_blank(),
+        panel.grid.minor = ggplot2::element_blank()
+      )
+  } else {
+    p <- ggplot2::ggplot(complete_data) +
+      ggplot2::aes(x = celltype, y = prop, fill = dataset) +
+      ggplot2::geom_bar(stat = "identity", position = "dodge", width = 0.8) +
+      ggplot2::scale_fill_manual(values = colors) +
+      ggplot2::labs(
+        x = "Cell Type",
+        y = "Percentage (%)",
+        fill = "Dataset"
+      ) +
+      ggplot2::theme_minimal() +
+      ggplot2::theme(
+        axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, vjust = 1),
+        legend.position = "bottom",
+        panel.grid.major.x = ggplot2::element_blank(),
+        panel.grid.minor = ggplot2::element_blank()
+      ) +
+      ggplot2::scale_y_continuous(labels = function(x) paste0(x, "%"))
+  }
+
 
   return(p)
 }

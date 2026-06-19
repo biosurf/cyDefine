@@ -11,6 +11,7 @@ plot_abundance_comparison(
   query_col = "model_prediction",
   ref_name = "Reference",
   query_name = "Query",
+  CLR = FALSE,
   colors = NULL,
   return_data = FALSE
 )
@@ -30,6 +31,8 @@ in the query dataset (default "model_prediction")}
 \item{ref_name}{Character string for reference dataset label in legend (default "Reference")}
 
 \item{query_name}{Character string for query dataset label in legend (default "Query")}
+
+\item{CLR}{CLR transform abundances, using Seurat's zero-bound CLR implementation.}
 
 \item{colors}{Named vector of colors for datasets. If NULL, uses default green
 for reference and orange for query}

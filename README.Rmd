@@ -42,11 +42,7 @@ remotes::install_github("biosurf/cyDefine")
 
 ## Documentation {#documentation}
 
-To view the documentation for using `cyDefine`, start R and enter:
-
-```{r vignettes, eval=FALSE}
-browseVignettes("cyDefine")
-```
+Find user guides and analysis vignettes on [Biosurf.org/cyDefine](https://biosurf.org/cyDefine).
 
 ## Usage
 

@@ -13,7 +13,7 @@ classify_cells(
   min.node.size = 1,
   splitrule = "gini",
   num.trees = 300,
-  use.weights = TRUE,
+  use.weights = FALSE,
   probability = TRUE,
   unassigned_name = "unassigned",
   load_model = NULL,

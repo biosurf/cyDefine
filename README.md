@@ -37,11 +37,8 @@ remotes::install_github("biosurf/cyDefine")
 
 ## Documentation
 
-To view the documentation for using `cyDefine`, start R and enter:
-
-``` r
-browseVignettes("cyDefine")
-```
+Find user guides and analysis vignettes on
+[Biosurf.org/cyDefine](https://biosurf.org/cyDefine).
 
 ## Usage
 
@@ -83,7 +80,7 @@ classified <- cyDefine(
 #> Running classification to identify similar populations
 #> 
 #> Reference adapted!
-#> Reference adaptation took 4.03 seconds
+#> Reference adaptation took 5.14 seconds
 #> Warning in batch_correct(reference = reference, query = query, markers =
 #> markers, : Overlapping sample ID(s) found between reference and query. Assuming
 #> that these represent different samples. Adding '_ref' and '_query',
@@ -92,15 +89,15 @@ classified <- cyDefine(
 #> Scaling expression data..
 #> Creating SOM grid..
 #> Batch correcting data..
-#> Batch correction took 15.39 seconds
+#> Batch correction took 27.99 seconds
 #> Making initial projection to filter out redundant cell types of the reference
 #> Excluding the following redundant celltypes from the reference: 
 #> Basophil
 #> Training random forest model using 4 threads
-#> Model training took 13.17 seconds
+#> Model training took 14 seconds
 #> Predicting..
-#> Classification took 19.68 seconds
-#> Outlier detection took 0.08 seconds
+#> Classification took 21.14 seconds
+#> Outlier detection took 0.1 seconds
 ```
 
 `cyDefine()` returns three objects:

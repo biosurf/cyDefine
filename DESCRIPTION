@@ -1,10 +1,10 @@
 Package: cyDefine
 Title: Reference-based cell type identification in single-cell cytometry
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: c(
-    person("Clara", "Drachmann", , "cladra@dtu.dk", role = c("aut", "cre"),
+    person("Clara", "Drachmann", role = "aut",
            comment = c(ORCID = "0000-0002-9652-6300")),
-    person("Søren Helweg", "Dam", role = "aut",
+    person("Søren Helweg", "Dam", email = "shdam@ik.me", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-0755-0016")),
     person("Christina Bligaard", "Pedersen", role = "aut",
            comment = c(ORCID = "0000-0002-9895-0930")),
